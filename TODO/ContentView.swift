@@ -1,15 +1,16 @@
-//
-//  ContentView.swift
-//  TODO
-//
-//  Created by Samuel Šulka on 23/12/2024.
-//
 
 import SwiftUI
 
+struct TodoItem: Identifiable, Equatable {
+    let id = UUID()
+    var title: String
+    var isDone: Bool
+}
+
 struct ContentView: View {
-    @State private var todoItems: [String] = []
+    @State private var todoItems: [TodoItem] = []
     @State private var newItem: String = ""
+    @State private var isMenuOpen = false  // 👈 NEW: Zobrazenie menu
 
     var body: some View {
         ZStack {
@@ -21,12 +22,37 @@ struct ContentView: View {
                 .padding()
 
             VStack {
-                Text("Debilníček")
-                    .font(.largeTitle)
-                    .foregroundColor(Color.white)
-                    .padding(.top, 130)
-                    .fontWeight(.bold)
+                HStack{
+                    Button(action: {
+                        openMenu()
+                    }) {
+                        Text("≡")
+                            .foregroundColor(.white)
+                            .padding()
+                            .font(.system(size: 48))
+                            .bold()
+                            .padding(.horizontal,10)
+                                                        
+                            .cornerRadius(10)
+                    }
+                    Spacer()
+                    Text("Debilníček")
+                        .font(.largeTitle)
+                        .foregroundColor(Color.white)
+                        
+                        
+                    
+                    
+                        .fontWeight(.bold)
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                }
+                .padding(.top, 150)
                 
+                    
+                    
+
                 Text("Počet úloh: \(todoItems.count)")
                     .font(.headline)
                     .foregroundColor(.white)
@@ -53,20 +79,26 @@ struct ContentView: View {
                             .background(Color.green.opacity(0.5))
                             .cornerRadius(10)
                     }
+
+                    
+                 
                 }
                 .padding(.top, 20)
 
                 List {
-                    ForEach(todoItems, id: \.self) { item in
-                        Text(item)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
-                            .background(Color.blue.opacity(0.23))
-                            .cornerRadius(10)
-                            .foregroundColor(.white)
-                            .listRowBackground(Color.clear)
+                    Section(header: Text("TODO").foregroundColor(.white).bold()) {
+                        ForEach(todoItems.filter { !$0.isDone }) { item in
+                            TaskRow(item: item, toggleDone: toggleDone)
+                            .listRowBackground(Color.clear)                        }
+                        .onDelete(perform: deleteItem)
                     }
-                    .onDelete(perform: deleteItem)
+
+                    Section(header: Text("DONE").foregroundColor(.white).bold()) {
+                        ForEach(todoItems.filter { $0.isDone }) { item in
+                            TaskRow(item: item, toggleDone: toggleDone)
+                            .listRowBackground(Color.clear)                        }
+                        .onDelete(perform: deleteItem)
+                    }
                 }
                 .scrollContentBackground(.hidden)
                 .background(Color.clear)
@@ -76,19 +108,82 @@ struct ContentView: View {
                 Spacer()
             }
         }
+        .sheet(isPresented: $isMenuOpen) {
+            MenuView()
+        }
     }
 
-    // Add a new task
+    private func toggleDone(_ item: TodoItem) {
+        if let index = todoItems.firstIndex(of: item) {
+            todoItems[index].isDone.toggle()
+        }
+    }
+
+    private func openMenu() {
+        isMenuOpen = true   // 👈 Otvorí sheet
+    }
+
     private func addNewItem() {
         guard !newItem.isEmpty else { return }
-        todoItems.append(newItem)
+        todoItems.append(TodoItem(title: newItem, isDone: false))
         newItem = ""
     }
 
-    // Delete a task
     private func deleteItem(at offsets: IndexSet) {
         todoItems.remove(atOffsets: offsets)
     }
+}
+
+struct TaskRow: View {
+    let item: TodoItem
+    let toggleDone: (TodoItem) -> Void
+
+    var body: some View {
+        HStack {
+            Text(item.title)
+            Spacer()
+            Image(systemName: item.isDone ? "checkmark.circle.fill" : "circle")
+                .foregroundColor(item.isDone ? .green : .gray)
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            toggleDone(item)
+        }
+        .padding()
+        .background(Color.blue.opacity(0.23))
+        .cornerRadius(10)
+        .foregroundColor(.white)
+    }
+}
+
+struct MenuView: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Menu")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                
+            
+
+            Button("Nastavenia") {
+                print("Klik na Nastavenia")
+            }
+            .foregroundColor(.blue)
+
+            Button("O aplikácii") {
+                print("Klik na O aplikácii")
+            }
+            .foregroundColor(.green)
+
+            Button("Zavrieť") {
+                dismiss()
+            }
+            .foregroundColor(.red)
+        }
+        .padding(.top, 100)
+    }
+
+    @Environment(\.dismiss) var dismiss
 }
 
 #Preview {
