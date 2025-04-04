@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		10A7B1D82D92DED000671204 /* TODOApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10A7B1D62D92DED000671204 /* TODOApp.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		105D1AB72D1958F6000BB80D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		105D1AA62D1958F5000BB80D /* TODO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TODO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		105D1AB62D1958F6000BB80D /* TODOTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TODOTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		105D1AC02D1958F6000BB80D /* TODOUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TODOUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		10A7B1D62D92DED000671204 /* TODOApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TODOApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -43,6 +48,26 @@
 		105D1AC32D1958F6000BB80D /* TODOUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = TODOUITests;
+			sourceTree = "<group>";
+		};
+		10A7B1E12D9479BA00671204 /* Models */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Models;
+			sourceTree = "<group>";
+		};
+		10A7B1E22D9479C500671204 /* Views */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Views;
+			sourceTree = "<group>";
+		};
+		10A7B1E32D9479CD00671204 /* ViewModels */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		10A7B1E42D9479DC00671204 /* Data */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -75,10 +100,15 @@
 		105D1A9D2D1958F5000BB80D = {
 			isa = PBXGroup;
 			children = (
+				10A7B1E42D9479DC00671204 /* Data */,
+				10A7B1E32D9479CD00671204 /* ViewModels */,
+				10A7B1E22D9479C500671204 /* Views */,
+				10A7B1E12D9479BA00671204 /* Models */,
 				105D1AA82D1958F5000BB80D /* TODO */,
 				105D1AB92D1958F6000BB80D /* TODOTests */,
 				105D1AC32D1958F6000BB80D /* TODOUITests */,
 				105D1AA72D1958F5000BB80D /* Products */,
+				10A7B1D62D92DED000671204 /* TODOApp.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -109,6 +139,10 @@
 			);
 			fileSystemSynchronizedGroups = (
 				105D1AA82D1958F5000BB80D /* TODO */,
+				10A7B1E12D9479BA00671204 /* Models */,
+				10A7B1E22D9479C500671204 /* Views */,
+				10A7B1E32D9479CD00671204 /* ViewModels */,
+				10A7B1E42D9479DC00671204 /* Data */,
 			);
 			name = TODO;
 			packageProductDependencies = (
@@ -236,6 +270,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				10A7B1D82D92DED000671204 /* TODOApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,17 +1,29 @@
-//
-//  TODOTests.swift
-//  TODOTests
-//
-//  Created by Samuel Šulka on 23/12/2024.
-//
-
 import Testing
 @testable import TODO
+import Foundation
 
 struct TODOTests {
 
     @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+        let viewModel = TaskViewModel()
+        let task = TodoTask(title: "Test task")
+        viewModel.toggleTaskCompletion(task: task)
+        assert(task.isDone == true)
+    }
+    
+    @Test func testNotification() async throws {
+        let viewModel = TaskViewModel()
+        viewModel.scheduleTestNotification()
+    }
+    
+    @Test func testIsOverdue() async throws {
+        let task = TodoTask(title: "Test task", deadline: Date().addingTimeInterval(-3600))
+        assert(task.isOverdue == true)
+    }
+    
+    @Test func testIsNotOverdue() async throws {
+        let task = TodoTask(title: "Test task", deadline: Date().addingTimeInterval(3600))
+        assert(task.isOverdue == false)
     }
 
 }
