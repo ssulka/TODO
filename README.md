@@ -30,3 +30,5 @@ xcodebuild test -scheme TODO -destination 'platform=iOS Simulator,name=iPhone 16
 -	Expected Time Consumption: 15 hodin
 
 ### ADDITIONAL FEATURES
+
+Settings contents: ColorSchemes
