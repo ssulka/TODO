@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "images.jpeg",
+      "filename" : "EASYTODO.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "images 1.jpeg",
+      "filename" : "EASYTODO@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "images 2.jpeg",
+      "filename" : "EASYTODO@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
