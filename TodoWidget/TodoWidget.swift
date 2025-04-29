@@ -8,50 +8,86 @@
 import WidgetKit
 import SwiftUI
 
-struct Provider: AppIntentTimelineProvider {
+struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), configuration: ConfigurationAppIntent())
+        SimpleEntry(date: Date(), tasks: ["Ukážková úloha"])
     }
 
-    func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> SimpleEntry {
-        SimpleEntry(date: Date(), configuration: configuration)
+    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
+        let entry = SimpleEntry(date: Date(), tasks: fetchTasks())
+        completion(entry)
     }
-    
-    func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<SimpleEntry> {
-        var entries: [SimpleEntry] = []
 
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, configuration: configuration)
-            entries.append(entry)
+    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> ()) {
+        let entry = SimpleEntry(date: Date(), tasks: fetchTasks())
+        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
+        completion(Timeline(entries: [entry], policy: .after(nextUpdate)))
+    }
+
+    private func fetchTasks() -> [String] {
+        let defaults = UserDefaults(suiteName: "group.com.samuelsulka.todo")
+        var taskTitles: [String] = []
+
+        if let tasksData = defaults?.data(forKey: "tasksList") {
+            if let decodedTasks = try? JSONDecoder().decode([TaskEntry].self, from: tasksData) {
+                taskTitles = decodedTasks.prefix(3).map { $0.title }
+            } else {
+                print("Nepodarilo sa dekódovať TaskEntry zo 'tasksList'")
+            }
+        } else {
+            print("Žiadne dáta v UserDefaults pre 'tasksList'")
         }
 
-        return Timeline(entries: entries, policy: .atEnd)
+        return taskTitles
     }
-
-//    func relevances() async -> WidgetRelevances<ConfigurationAppIntent> {
-//        // Generate a list containing the contexts this widget is relevant in.
-//    }
 }
 
 struct SimpleEntry: TimelineEntry {
     let date: Date
-    let configuration: ConfigurationAppIntent
+    let tasks: [String]
+}
+struct TaskEntry: Identifiable, Codable {
+    let id: UUID
+    let title: String
+    let deadline: Date?
 }
 
 struct TodoWidgetEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
-        VStack {
-            Text("Time:")
-            Text(entry.date, style: .time)
-
-            Text("Favorite Emoji:")
-            Text(entry.configuration.favoriteEmoji)
-        }
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("EASYTODO")
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                Spacer()
+                Text(entry.date, style: .time)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            if entry.tasks.isEmpty {
+                Text("Žiadne úlohy")
+                    .font(.system(.body))
+                    .foregroundColor(.secondary)
+                    .padding(.vertical, 4)
+            } else {
+                ForEach(entry.tasks, id: \.self) { task in
+                                    HStack(alignment: .center) {
+                                        Image(systemName: "circle")
+                                            .font(.system(size: 12))
+                                        Text(task)
+                                            .font(.system(.body))
+                                            .lineLimit(1)
+                                        Spacer()
+                                    }
+                                    .padding(.vertical, 2)
+                                }
+                            }
+                            Spacer()
+                        }
+                        .padding()
     }
 }
 
@@ -59,30 +95,20 @@ struct TodoWidget: Widget {
     let kind: String = "TodoWidget"
 
     var body: some WidgetConfiguration {
-        AppIntentConfiguration(kind: kind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in
+        StaticConfiguration(kind: kind, provider: Provider()) { entry in
             TodoWidgetEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
+        .configurationDisplayName("Posledné úlohy")
+        .description("Zobrazuje vaše posledné 3 úlohy.")
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
 
-extension ConfigurationAppIntent {
-    fileprivate static var smiley: ConfigurationAppIntent {
-        let intent = ConfigurationAppIntent()
-        intent.favoriteEmoji = "😀"
-        return intent
-    }
-    
-    fileprivate static var starEyes: ConfigurationAppIntent {
-        let intent = ConfigurationAppIntent()
-        intent.favoriteEmoji = "🤩"
-        return intent
-    }
-}
-
-#Preview(as: .systemSmall) {
-    TodoWidget()
-} timeline: {
-    SimpleEntry(date: .now, configuration: .smiley)
-    SimpleEntry(date: .now, configuration: .starEyes)
+#Preview {
+    TodoWidgetEntryView(entry: SimpleEntry(
+        date: Date(),
+        tasks: ["Nakúpiť potraviny", "Zavolať mame", "Dokončiť projekt"]
+    ))
+    .containerBackground(.fill.tertiary, for: .widget)
 }

@@ -9,7 +9,7 @@ struct SplashScreenView: View {
             ContentView() // ak je uvodna obrazovka skoncena, zobrazi sa main obrazovka
         } else {
             VStack {
-                Image("Image")
+                Image("EASYTODO")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100, height: 100)

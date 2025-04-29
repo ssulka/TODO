@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import UserNotifications
+import WidgetKit
 
 class AppearanceSettings: ObservableObject {
     @AppStorage("colorScheme") var colorScheme = 0 // 0: system, 1: light, 2: dark
@@ -17,11 +18,16 @@ class AppearanceSettings: ObservableObject {
     }
 }
 
+
+
+
 @main
 struct TODOApp: App {
     @State private var showSplash = true
     @StateObject private var appearanceSettings = AppearanceSettings()
     private let notificationDelegate = NotificationDelegate()
+    
+    
 
     init() {
         let center = UNUserNotificationCenter.current()
@@ -48,6 +54,26 @@ struct TODOApp: App {
         }
         .modelContainer(for: TodoTask.self)
     }
+    static func saveTasksForWidget(tasks: [TodoTask]) {
+            let sharedDefaults = UserDefaults(suiteName: "group.com.samuelsulka.todo") // group identifier
+
+            let taskEntries = tasks
+                .filter { !$0.isDone }
+                .sorted { ($0.deadline ?? Date.distantFuture) < ($1.deadline ?? Date.distantFuture) }
+                .prefix(3)
+                .map { task in
+                    TaskEntry(id: UUID(), title: task.title, deadline: task.deadline)
+                }
+
+            if let encoded = try? JSONEncoder().encode(taskEntries) {
+                sharedDefaults?.set(encoded, forKey: "tasksList")
+                print("✅ Tasky uložené pre widget.")
+            } else {
+                print("❌ Nepodarilo sa zakódovať tasky pre widget.")
+            }
+
+            WidgetCenter.shared.reloadAllTimelines() // 🔥 automaticky refresh widget
+        }}
 
     // Funkcia na požiadanie o povolenie notifikácií
     private func requestNotificationPermission() {
@@ -59,7 +85,7 @@ struct TODOApp: App {
             }
         }
     }
-}
+
 
 // Delegát, ktorý spravuje notifikácie
 class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {

@@ -11,7 +11,7 @@ struct MenuView: View {
         VStack(alignment: .center, spacing: 10) {
             Button(action: { dismiss() }) {
                 
-                Text("Zavrieť")
+                Text("Exit")
                     .foregroundColor(.blue)
                     .font(.headline)
                     .padding(.top,30)
