@@ -96,7 +96,6 @@ class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     
     // Tento metóda sa volá, keď používateľ reaguje na notifikáciu
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        // Tu môžeš pridať kód na spracovanie odpovede používateľa (napríklad otvorenie aplikácie alebo špecifickej obrazovky)
         print("Notifikácia bola otvorená.")
         completionHandler()
     }

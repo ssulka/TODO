@@ -22,6 +22,9 @@ struct TaskRowView: View {
                 Text(task.deadline ?? Date(), style: .time)
                     .font(.caption)
                     .foregroundColor(task.isOverdue ? .red : .white.opacity(0.7))
+                Text(task.category)
+                    .font(.caption)
+                    .foregroundColor(.white.opacity(0.7))
             }
             
             Spacer()

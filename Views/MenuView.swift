@@ -25,16 +25,16 @@ struct MenuView: View {
                 
             List {
                 Button(action: {}) {
-                    Label("Všetky zoznamy úloh", systemImage: "list.bullet")
+                    Label("All lists", systemImage: "list.bullet")
                     
                 }
                     Button(action: {isSettingsOpen=true}) {
-                        Label("Nastavenia", systemImage: "gear")
+                        Label("Settings", systemImage: "gear")
                     }.sheet(isPresented: $isSettingsOpen) {
                         Settings()}
                     
                     Button(action: {isAboutOpen=true}) {
-                        Label("O aplikácii", systemImage: "info.circle")
+                        Label("About EASYTODO", systemImage: "info.circle")
                         
                     }.sheet(isPresented: $isAboutOpen) {
                         About()    }
